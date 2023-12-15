@@ -11,4 +11,6 @@
     <string name="next">Следующий уровень</string>
     <string name="up1">Улучшить оружие (400)</string>
     <string name="up2">Улучшить корабль (1000)</string>
+    <string name="reset">Сброс</string>
+    <string name="toofew">Вам не хватает денег</string>
 </resources>

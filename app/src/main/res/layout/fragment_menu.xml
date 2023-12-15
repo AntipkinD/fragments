@@ -96,6 +96,24 @@
         app:layout_constraintVertical_bias="0.437"></Button>
 
     <Button
+        android:id="@+id/reset_button"
+        android:layout_width="162dp"
+        android:layout_height="167dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/reset"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="38sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.978"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.963"></Button>
+
+    <Button
         android:id="@+id/upgrade_button2"
         android:layout_width="520dp"
         android:layout_height="96dp"

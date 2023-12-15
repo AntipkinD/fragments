@@ -3,16 +3,13 @@ package com.example.fragments;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.fragments.MenuFragment;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,10 +18,7 @@ public class MainActivity extends AppCompatActivity {
     public Random badrnd = new Random();
     public Integer enemiescounter;
     public Integer enemiesnumber = 25;
-    public TextView counter;
-    public Intent intent;
     public Integer strikenumber = 3;
-    public TextView timerView;
     public Integer mlseconds = 10000;
     public String winordefeat = "Поражение";
     public boolean start = false;
@@ -34,11 +28,19 @@ public class MainActivity extends AppCompatActivity {
     CountDownTimer timer;
     public Fragment gamefragment;
     public Fragment menufragment;
-    public Button redbtn, startbtn, restartbtn, nextlvlbtn, upgrade1btn, upgrade2btn;
+    public Button redbtn, startbtn, restartbtn, nextlvlbtn, upgrade1btn, upgrade2btn, resetbtn;
+    protected SharedPreferences all_progress;
+    protected SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        all_progress = getSharedPreferences("ALL_INFO", MODE_PRIVATE);
+        money = all_progress.getInt("MONEY", 0);
+        mlseconds = all_progress.getInt("TIME", 10000);
+        strikenumber = all_progress.getInt("STRIKE", 3);
+        enemiesnumber = all_progress.getInt("ENEMIES", 25);
 
         setEnemies();
         menufragment = getFragmentManager().findFragmentById(R.id.fragment_menu);
@@ -50,15 +52,19 @@ public class MainActivity extends AppCompatActivity {
         restartbtn = menufragment.getView().findViewById(R.id.restart_button);
         restartbtn.setOnClickListener(this::onClickRestart);
         nextlvlbtn = menufragment.getView().findViewById(R.id.next_button);
-        nextlvlbtn.setOnClickListener(this::onNextLevel);
+        nextlvlbtn.setOnClickListener(this::onClickNextLevel);
         upgrade1btn = menufragment.getView().findViewById(R.id.upgrade_button1);
         upgrade1btn.setOnClickListener(this::onUpgrade1);
         upgrade2btn = menufragment.getView().findViewById(R.id.upgrade_button2);
         upgrade2btn.setOnClickListener(this::onUpgrade2);
+        resetbtn = menufragment.getView().findViewById(R.id.reset_button);
+        resetbtn.setOnClickListener(this::ResetProgress);
         nextlvlbtn.setEnabled(false);
         restartbtn.setEnabled(false);
         upgrade1btn.setEnabled(false);
         upgrade2btn.setEnabled(false);
+        resetbtn.setEnabled(false);
+        ((TextView) menufragment.getView().findViewById(R.id.moneycounter)).setText(this.money.toString());
         timer = new CountDownTimer(this.mlseconds, 1000) {
             @Override
             public void onTick(long miliseconds) {
@@ -98,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                         restartbtn.setEnabled(true);
                         upgrade1btn.setEnabled(true);
                         upgrade2btn.setEnabled(true);
+                        resetbtn.setEnabled(true);
                     }
                 }
             }
@@ -125,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                         restartbtn.setEnabled(false);
                         upgrade1btn.setEnabled(true);
                         upgrade2btn.setEnabled(true);
+                        resetbtn.setEnabled(true);
                     }
                 }
             }
@@ -134,13 +142,10 @@ public class MainActivity extends AppCompatActivity {
         this.timer.start();
         startbtn.setEnabled(false);
         redbtn.setEnabled(true);
+        resetbtn.setEnabled(false);
         this.start = true;
     }
     public void onClickRestart(View view){
-        this.strikenumber = this.strikenumber;
-        this.mlseconds = this.mlseconds;
-        this.money = this.money;
-        this.enemiesnumber = this.enemiesnumber;
         badrnd = new Random(this.strikenumber);
         setEnemies();
         startbtn.setEnabled(true);
@@ -151,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         winstate = false;
         finish = false;
         start = false;
-        ((TextView) gamefragment.getView().findViewById(R.id.winstatetimer)).setText("Количество врагов");
+        ((TextView) gamefragment.getView().findViewById(R.id.winstatetimer)).setText(this.getString(R.string.timertxt));
         timer = new CountDownTimer(this.mlseconds, 1000) {
             @Override
             public void onTick(long miliseconds) {
@@ -164,11 +169,9 @@ public class MainActivity extends AppCompatActivity {
                 toKill();
             }
         };
+        //SaveState();
     }
-    public void onNextLevel(View view){
-        this.strikenumber = this.strikenumber;
-        this.mlseconds = this.mlseconds;
-        this.money = this.money;
+    public void onClickNextLevel(View view){
         this.enemiesnumber += this.strikenumber*7;
         badrnd = new Random(this.strikenumber);
         setEnemies();
@@ -180,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
         winstate = false;
         finish = false;
         start = false;
-        ((TextView) gamefragment.getView().findViewById(R.id.winstatetimer)).setText("Количество врагов");
+        ((TextView) gamefragment.getView().findViewById(R.id.winstatetimer)).setText(this.getString(R.string.timertxt));
         timer = new CountDownTimer(this.mlseconds, 1000) {
             @Override
             public void onTick(long miliseconds) {
@@ -193,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 toKill();
             }
         };
+        //SaveState();
     }
     public void onUpgrade1(View view){
         if (this.money >= 400) {
@@ -200,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
             this.strikenumber += 1;
             ((TextView) menufragment.getView().findViewById(R.id.moneycounter)).setText(this.money.toString());
         }
-        else Toast.makeText(this, "Вам не хватает денег", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(this, this.getString(R.string.toofew), Toast.LENGTH_SHORT).show();
     }
     public void onUpgrade2(View view){
         if (this.money >= 1000) {
@@ -208,6 +212,34 @@ public class MainActivity extends AppCompatActivity {
             this.mlseconds += 5000;
             ((TextView) menufragment.getView().findViewById(R.id.moneycounter)).setText(this.money.toString());
         }
-        else Toast.makeText(this, "Вам не хватает денег", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(this, this.getString(R.string.toofew), Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        SaveState();
+    }
+    void SaveState(){
+        editor = all_progress.edit();
+        Toast.makeText(this, "СТОП", Toast.LENGTH_SHORT);
+        editor.putInt("MONEY", money);
+        editor.putInt("TIME", mlseconds);
+        editor.putInt("STRIKE", strikenumber);
+        editor.putInt("ENEMIES", enemiesnumber);
+        editor.apply();
+    }
+    public void ResetProgress(View view){
+        editor = all_progress.edit();
+        editor.clear();
+        editor.apply();
+        money = all_progress.getInt("MONEY", 0);
+        mlseconds = all_progress.getInt("TIME", 10000);
+        strikenumber = all_progress.getInt("STRIKE", 3);
+        enemiesnumber = all_progress.getInt("ENEMIES", 25);
+        ((TextView) menufragment.getView().findViewById(R.id.moneycounter)).setText(this.money.toString());
+        ((TextView) gamefragment.getView().findViewById(R.id.winstatetimer)).setText(this.getString(R.string.timertxt));
+        onClickRestart(view);
+        setEnemies();
+
     }
 }
