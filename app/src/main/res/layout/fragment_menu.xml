@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/greypurple"
+    tools:context=".MenuFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/moneytxtview"
+        android:layout_width="577dp"
+        android:layout_height="70dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/frag2_text"
+        android:textColor="@color/white"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.194"></TextView>
+
+    <TextView
+        android:id="@+id/moneycounter"
+        android:layout_width="344dp"
+        android:layout_height="71dp"
+        android:fontFamily="sans-serif-black"
+        android:text="0"
+        android:textAlignment="textEnd"
+        android:textColor="@color/white"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.971"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.194"></TextView>
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="510dp"
+        android:layout_height="90dp"
+        android:backgroundTint="@color/green"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/next"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="38sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.803"></Button>
+
+    <Button
+        android:id="@+id/restart_button"
+        android:layout_width="510dp"
+        android:layout_height="90dp"
+        android:backgroundTint="@color/lightred"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/restart"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="38sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.965"></Button>
+
+    <Button
+        android:id="@+id/upgrade_button1"
+        android:layout_width="510dp"
+        android:layout_height="96dp"
+        android:backgroundTint="@color/orange"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/up1"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="38sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.437"></Button>
+
+    <Button
+        android:id="@+id/upgrade_button2"
+        android:layout_width="520dp"
+        android:layout_height="96dp"
+        android:backgroundTint="@color/orange"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/up2"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="38sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.608"></Button>
+</androidx.constraintlayout.widget.ConstraintLayout>
