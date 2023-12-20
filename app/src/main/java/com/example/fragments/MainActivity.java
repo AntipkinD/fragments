@@ -35,18 +35,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //Инициализация переменных из общих настроек
         all_progress = getSharedPreferences("ALL_INFO", MODE_PRIVATE);
+        editor = all_progress.edit();
         money = all_progress.getInt("MONEY", 0);
         mlseconds = all_progress.getInt("TIME", 10000);
         strikenumber = all_progress.getInt("STRIKE", 3);
         enemiesnumber = all_progress.getInt("ENEMIES", 25);
-
+        //Первоначальная установка врагов
         setEnemies();
+        //Инициализауия всех элементов, принимающих участие в работе программы
         menufragment = getFragmentManager().findFragmentById(R.id.fragment_menu);
         gamefragment = getFragmentManager().findFragmentById(R.id.fragment_game);
         redbtn = gamefragment.getView().findViewById(R.id.red_button);
-        redbtn.setOnClickListener(this::onClick);
+        redbtn.setOnClickListener(this::toKill);
         startbtn = gamefragment.getView().findViewById(R.id.start_button);
         startbtn.setOnClickListener(this::onStartTimer);
         restartbtn = menufragment.getView().findViewById(R.id.restart_button);
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         upgrade2btn.setEnabled(false);
         resetbtn.setEnabled(false);
         ((TextView) menufragment.getView().findViewById(R.id.moneycounter)).setText(this.money.toString());
+        //Инициализация таймера
         timer = new CountDownTimer(this.mlseconds, 1000) {
             @Override
             public void onTick(long miliseconds) {
@@ -74,26 +77,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 finish = true;
-                toKill();
+                toKill(redbtn);
             }
         };
     }
-    public void onClick(View view){
-        toKill();
-    }
+    //Метод для установки количества врагов
     public void setEnemies() {
         gamefragment = getFragmentManager().findFragmentById(R.id.fragment_game);
         this.enemiescounter = this.badrnd.nextInt(this.enemiesnumber);
         ((TextView) gamefragment.getView().findViewById(R.id.enemies_counter)).setText(this.enemiescounter.toString());
     }
-    public void toKill(){
+    //Метод для уничтожения врагов
+    public void toKill(View view){
+        //Условие проверяет запуск таймера
         if (this.start == true){
+            //Условие проверяет количество врагов: если врагов больше нуля, то они отнимаются, если меньше - таймер останавливается и счетчик врагов приравнивается нулю
             if (this.enemiescounter > 0){
                 this.winstate = false;
+                //Уловие проверяет завершенность уровня и если уровень не завершен, то нанесение урона продолжается
                 if (finish == false)
                     this.enemiescounter=this.enemiescounter-this.goodrnd.nextInt(this.strikenumber);
                 ((TextView) gamefragment.getView().findViewById(R.id.enemies_counter)).setText(this.enemiescounter.toString());
                 this.winordefeat = "Поражение";
+                //Если уровень завершен, то игровые кнопки становятся недоступны и открывается доступ к кнопкам "магазина"
                 if (finish == true){
                     ((TextView) gamefragment.getView().findViewById(R.id.winstatetimer)).setText(winordefeat);
                     if (winstate == false){
@@ -108,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+            //Условие проверяет количество врагов: если врагов больше нуля, то они отнимаются, если меньше - таймер останавливается и счетчик врагов приравнивается нулю
             if (this.enemiescounter <= 0){
                 this.winstate = true;
                 this.finish = true;
@@ -118,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 if (finish == true){
                     if (winstate == true){
                         ((TextView) gamefragment.getView().findViewById(R.id.winstatetimer)).setText(winordefeat);
+                        //Тяжело объяснить, но эти условия нужны для прогрессивных выплат по завершении уровня, грубо скажем для баланса и чтобы сложность была умеренная
                         if (this.enemiesnumber >= 25 & this.enemiesnumber < 50)
                             this.money += 100;
                         if (this.enemiesnumber >= 50 & this.enemiesnumber < 70)
@@ -138,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    //Метод для запуска таймера
     public void onStartTimer(View view){
         this.timer.start();
         startbtn.setEnabled(false);
@@ -145,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         resetbtn.setEnabled(false);
         this.start = true;
     }
+    //Метод для выполнения действия перезапуска уровня при проигрыше
     public void onClickRestart(View view){
         badrnd = new Random(this.strikenumber);
         setEnemies();
@@ -157,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         finish = false;
         start = false;
         ((TextView) gamefragment.getView().findViewById(R.id.winstatetimer)).setText(this.getString(R.string.timertxt));
+        //Инициализация таймера еще раз, так как меняется переменная mlseconds, отвечающая за время в миллисекундах
         timer = new CountDownTimer(this.mlseconds, 1000) {
             @Override
             public void onTick(long miliseconds) {
@@ -166,11 +177,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 finish = true;
-                toKill();
+                toKill(redbtn);
             }
         };
         //SaveState();
     }
+    //Метод для выполнения действия запуска следующего уровня при выигрыше
     public void onClickNextLevel(View view){
         this.enemiesnumber += this.strikenumber*7;
         badrnd = new Random(this.strikenumber);
@@ -184,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
         finish = false;
         start = false;
         ((TextView) gamefragment.getView().findViewById(R.id.winstatetimer)).setText(this.getString(R.string.timertxt));
+        //И еще раз, по той же причине
         timer = new CountDownTimer(this.mlseconds, 1000) {
             @Override
             public void onTick(long miliseconds) {
@@ -193,11 +206,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 finish = true;
-                toKill();
+                toKill(redbtn);
             }
         };
         //SaveState();
     }
+    //Метод для кнопки апгрейда (Улучшить оружие (400))
     public void onUpgrade1(View view){
         if (this.money >= 400) {
             this.money -= 400;
@@ -206,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else Toast.makeText(this, this.getString(R.string.toofew), Toast.LENGTH_SHORT).show();
     }
+    //Метод для другой кнопки апгрейда (Улучшить корабль (1000))
     public void onUpgrade2(View view){
         if (this.money >= 1000) {
             this.money -= 1000;
@@ -219,8 +234,8 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         SaveState();
     }
+    //Метод для сохранения результата игрока
     void SaveState(){
-        editor = all_progress.edit();
         Toast.makeText(this, "СТОП", Toast.LENGTH_SHORT);
         editor.putInt("MONEY", money);
         editor.putInt("TIME", mlseconds);
@@ -228,8 +243,8 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("ENEMIES", enemiesnumber);
         editor.apply();
     }
+    //Метод для очистки результата игрока
     public void ResetProgress(View view){
-        editor = all_progress.edit();
         editor.clear();
         editor.apply();
         money = all_progress.getInt("MONEY", 0);
